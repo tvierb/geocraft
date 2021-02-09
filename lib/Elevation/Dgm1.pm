@@ -32,7 +32,7 @@ sub new
 		height_dir => $height_dir,
 		tmp_dir => $tmp_dir,
 		correction => $correction,
-		dots => {},
+		elevations => {},
 	}, $class;
 
 }
@@ -45,7 +45,11 @@ sub ll
 	$east = round($east);   # aka Rechtswert
 	$north = round($north); # aka Hochwert
 	print "lat=$lat, lon=$lon -> z $zone, east=$east, north=$north\n";
-	print "Key: " . $self->get_dgm1_key( $zone, $east, $north ) . "\n";
+	my $key = $self->get_dgm1_key( $zone, $east, $north );
+	if (! defined( $self->{ elevations }->{ $key } ))
+	{
+		$self->load_dgm1( $key ) or die("cannot load dgm1 data from '$key'\n");
+	}
 	return 60;
 }
 
@@ -65,6 +69,26 @@ sub get_dgm1_key
 	$north-- if ($north % 2); # -> 5634
 
 	return "dgm1_" . $zone . $east . "_" . $north . "_2_nw.xyz";
+}
+
+# Load dgm1...xyz file into $self->elevation
+sub load_dgm1
+{
+	my ($self, $filename) = @_;
+	print "Loading $filename ... ";
+	return unless -e $filename;
+	$self->{ elevations }->{ $filename } = {};
+	open(my $fh, "<", $filename) or die("404: $filename\n");
+	while (my $line = <$fh>)
+	{
+		chomp($line);
+		my @parts = split(/ +/, $line);
+		my $dotkey = $parts[0] . "_" . $parts[1];
+		$self->{ elevations }->{ $filename }->{ $dotkey } = $parts[2];
+	}
+	close($fh);
+	print "done\n";
+	return 1;
 }
 
 1;
