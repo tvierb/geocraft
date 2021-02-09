@@ -121,7 +121,6 @@ sub load_dgm1_file
 	my ($self, $filename) = @_;
 	print "Loading $filename ... ";
 	return unless -e $filename;
-	$self->{ elevations }->{ $filename } = {};
 	open(my $fh, "<", $filename) or die("404: $filename\n");
 	while (my $line = <$fh>)
 	{
