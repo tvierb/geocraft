@@ -122,7 +122,11 @@ sub load_dgm1_file
 	my ($self, $filename) = @_;
 	print "Loading $filename ... ";
 	return unless -e $filename;
-	open(my $fh, "<", $filename) or die("404: $filename\n");
+	open(my $fh, "<", $filename);
+	if (! $fh) {
+		print "File missing: $filename\n";
+		exit(1);
+	}
 	while (my $line = <$fh>)
 	{
 		chomp($line);
