@@ -44,17 +44,17 @@ sub ll
 {
 	my( $self, $model, $lat, $lon ) = @_;
 
-	if ($self->{ tests } == 0)
-	{
-		$self->{ tests } = 1;
-		$self->load_dgm1_file( "dgm1_test.xyz" );
-		print Dumper( $self->{ elevations } );
-	}
+# 	if ($self->{ tests } == 0)
+# 	{
+# 		$self->{ tests } = 1;
+# 		$self->load_dgm1_file( "dgm1_test.xyz" );
+# 		print Dumper( $self->{ elevations } );
+# 	}
 
 	my ($zone, $east, $north) = latlon_to_utm( 23, $lat, $lon );
 	$east = round($east);   # aka Rechtswert
 	$north = round($north); # aka Hochwert
-	print "lat=$lat, lon=$lon -> z $zone, east=$east, north=$north\n";
+	# print "lat=$lat, lon=$lon -> z $zone, east=$east, north=$north\n";
 
 	# read dgm1 file if data not present:
 	my $dgm1file = $self->get_dgm1_filename( $zone, $east, $north );
@@ -74,7 +74,7 @@ sub ll
 	{
 		my $xelev = 60 + (90 * ($elev - $minheight) / ($maxheight - $minheight));
 		$xelev = round($xelev);
-		print "elev=$elev, xelev=$xelev\n";
+		# print "elev=$elev, xelev=$xelev\n";
 		$xelev = 250 if $xelev > 250;
 		$xelev = 0 if $xelev < 0;
 		$elev = $xelev;
@@ -82,6 +82,7 @@ sub ll
 	else {
 		$elev = 60; # default
 		print "no elev, using 60\n";
+		print "at: lat=$lat, lon=$lon -> z $zone, east=$east, north=$north\n";
 	}
 
 	return $elev;
