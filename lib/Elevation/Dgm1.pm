@@ -109,7 +109,7 @@ sub get_dgm1_filename
 sub get_dotkey
 {
 	my ($self, $zone, $east, $north) = @_;
-	if ($zone =~ /^[0-9]+/) {
+	if ($zone =~ /^([0-9]+)/) {
 		$zone = $1;
 	}
 
